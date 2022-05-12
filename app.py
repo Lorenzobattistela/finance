@@ -13,7 +13,8 @@ def main():
 
 def showReport():
     report.defaultConfig()
-    browser.openReport()
+    print(report.construct_html())
+    #browser.openReport()
     return 
 
 def addInvestment():
