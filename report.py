@@ -59,8 +59,10 @@ def construct_html():
         type_data = retrieve_investment(typ)
         label = get_investment_label(typ)
         for i in range(len(type_data)):
+            print
             html += f'<p>Label: {label[i]}</p><br>'
-            html += f'<p>Data: {type_data[i]}</p><br>'
+            print(types.index(typ))
+            html += f'<p>Data: {type_data[types.index(typ)][i]}</p><br>'
     html += '</div>'
     return html
 
@@ -76,5 +78,10 @@ def get_investment_label(typ):
     if choosen == 'default':
         raise Exception('Erro: insira uma opção disponível')
     return choosen
-#file = open('report.html', 'w')
 
+def write_html():
+    html = construct_html()
+    file = open('report.html', 'w')
+    file.write(html)
+    file.close()
+    return
