@@ -1,0 +1,6 @@
+.data {
+    display: flex;
+}
+table, th, td {
+    border: solid 1px #000;
+}

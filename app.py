@@ -1,5 +1,7 @@
+from click import edit
 import browser
 import report
+import helpers
 
 def main():
     print('Bem vindo ao Finance. O quê você deseja fazer?')
@@ -18,7 +20,18 @@ def showReport():
     return 
 
 def addInvestment():
+    investment_types = report.get_investment_types()
+    print('Escolha um tipo de investimento: ')
+    for typ in investment_types:
+        print(f'{typ}')
+    user_invest_type = input()
+    labels = report.get_investment_label(user_invest_type)
+    user_inputs = []
+    for label in labels:
+        user_inputs.append(input(f'{label}: '))
+    helpers.insertInDb(user_invest_type, user_inputs)
     return
+
 
 def editInvestment():
     return
@@ -27,16 +40,17 @@ def deleteInvestment():
     return
 
 def handleInput(option):
-    switch = {
-        '1': showReport(),
-        '2': addInvestment(),
-        '3': editInvestment(),
-        '4': deleteInvestment(),
-    }
-    choosen = switch.get(option, 'default')
-    if choosen == 'default':
+    if option == '1':
+        showReport()
+    elif option == '2':
+        addInvestment()
+    elif option == '3':
+        editInvestment()
+    elif option == '4':
+        deleteInvestment()
+    else:
         raise Exception('Erro: insira uma opção disponível')
-    return choosen
+    return 
      
 
 main()

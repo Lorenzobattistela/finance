@@ -33,6 +33,8 @@ def defaultConfig():
 def get_investment_types():
     return ['cash', 'international', 'stocks', 'fii', 'gov']
 
+#def insert_investment(typ, )
+
 def retrieve_investment(typ):
     types = get_investment_types()
     if typ not in types:
@@ -49,6 +51,7 @@ def retrieve_investment(typ):
         SELECT * FROM {};
     '''.format(typ))
     data = data.fetchall()
+
     conn.commit()
     return data
 
@@ -58,13 +61,33 @@ def construct_html():
     for typ in types:
         type_data = retrieve_investment(typ)
         label = get_investment_label(typ)
+        html += f'<h2>{typ}</h2>'
         for i in range(len(type_data)):
-            print
-            html += f'<p>Label: {label[i]}</p><br>'
-            print(types.index(typ))
-            html += f'<p>Data: {type_data[types.index(typ)][i]}</p><br>'
+            html += '<div class="data"><table>'
+            html += f'<tr><th scope="col">{label[i]}</th></tr>'
+            html += f'<tr><td>{type_data[types.index(typ)][i]} </td></tr>'
+            html += '</table></div>'
     html += '</div>'
-    return html
+    doc_html = insert_in_html_template(html)
+    return doc_html
+
+
+def insert_in_html_template(html):
+    html_template = f'''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="report.css" />
+    <title>Finance Report</title>
+</head>
+<body>
+    <h1>Finance Report</h1>
+    {html}
+</body>
+</html>'''
+    return html_template
 
 def get_investment_label(typ):
     switch = {
