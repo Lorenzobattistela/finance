@@ -1,4 +1,7 @@
 import sqlite3
+from dotenv import load_dotenv
+import os
+import requests
 
 def defaultConfig():
     try:
@@ -56,21 +59,47 @@ def retrieve_investment(typ):
     return data
 
 def construct_html():
+    load_dotenv()
+    quote_index = None
     html = '<div>'
     types = get_investment_types()
     for typ in types:
         type_data = retrieve_investment(typ)
         label = get_investment_label(typ)
-        html += f'<h2>{typ}</h2>'
+
+        if 'quote' in label:
+            quote_index = label.index('quote')
+        
+        html += f'<h2>{typ}</h2><div class="tables">'
         for i in range(len(type_data)):
-            html += '<div class="data"><table>'
-            html += f'<tr><th scope="col">{label[i]}</th></tr>'
-            html += f'<tr><td>{type_data[types.index(typ)][i]} </td></tr>'
-            html += '</table></div>'
+            html += '<table>'
+            for j in range(len(label)):
+                html += f'<tr><th scope="col">{label[j]}</th></tr>'
+                html += f'<tr><td>{type_data[i][j]} </td></tr>'
+
+            if quote_index != None:
+                actual_price = get_actual_price(type_data[i][quote_index])
+                html += '<tr><th scope="col">Actual_price</th></tr>'
+                html += f'<tr><td >{actual_price}</td></tr>'
+           
+
+            html += '</table>'
+
+
+
+        html += '</div>'
     html += '</div>'
     doc_html = insert_in_html_template(html)
     return doc_html
 
+
+def get_actual_price(quote):
+    lower_quote = quote.lower()
+    api_key = os.getenv('API_KEY')
+    response = requests.get(f'https://api.hgbrasil.com/finance/stock_price?key={api_key}&symbol={lower_quote}')
+    json = response.json()
+    actual_price = json['results'][quote]['price']
+    return actual_price
 
 def insert_in_html_template(html):
     html_template = f'''<!DOCTYPE html>

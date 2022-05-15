@@ -4,3 +4,7 @@
 table, th, td {
     border: solid 1px #000;
 }
+
+.tables {
+    display: flex;
+}
