@@ -2,7 +2,19 @@
     display: flex;
 }
 table, th, td {
+    
+}
+
+th, td {
+    text-align: left;
+    vertical-align: top;
     border: solid 1px #000;
+    border-spacing: 0;
+    padding: 0.4em;
+}
+
+th {
+    background: #eee;
 }
 
 .tables {
