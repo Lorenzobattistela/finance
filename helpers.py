@@ -29,6 +29,21 @@ def insertInDb(table, data_list):
     except:
         raise Exception('Something went wrong with insert query')
 
+def deleteAtIndexDb(table, investment):
+    conn = sqlite3.connect('report.db')
+    c = conn.cursor()
+    labels = get_investment_label(table)
+    query = f'DELETE FROM {table} WHERE {labels[0]} = "{investment}";'
+    try:
+        c.execute(query)
+        conn.commit()
+        conn.close()
+    except:     
+        raise Exception('Something went wrong with delete query')
+
+    print(f'Deleted successfully investment at {table}')
+    return
+
 
 def get_investment_types():
     return ['cash', 'international', 'stocks', 'fii', 'gov']

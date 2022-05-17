@@ -37,6 +37,22 @@ def editInvestment():
     return
 
 def deleteInvestment():
+    investment_types = helpers.get_investment_types()
+    print('Que tipo de investimento você gostaria de deletar?')
+
+    for typ in investment_types:
+        print(f'{typ}')
+
+    user_invest_type = input()
+    investment_list = helpers.retrieve_investment(user_invest_type)
+    print(investment_list)
+    print('Qual investimento você gostaria de deletar? (começando do 1)')
+    delete_invest_index = int(input()) - 1
+    investment = investment_list[delete_invest_index][0]
+
+    helpers.deleteAtIndexDb(user_invest_type, investment)
+    
+
     return
 
 def handleInput(option):
