@@ -87,3 +87,18 @@ def calculate_balance(buy_price, actual_price, quantity):
     quantity = float(quantity)
     balance = (actual_price - buy_price) * quantity
     return round(balance, 2)
+
+def updateAtTable(table, column, old_value, new_value):
+    conn = sqlite3.connect('report.db')
+    c = conn.cursor()
+    query = f'UPDATE {table} SET {column} = {new_value} WHERE {column} = {old_value};'
+    
+    try:
+        c.execute(query)
+        conn.commit()
+        conn.close()
+    except:     
+        raise Exception('Something went wrong with delete query')
+
+    print(f'Edited successfully investment at {table}')
+    return

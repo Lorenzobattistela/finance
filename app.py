@@ -34,6 +34,26 @@ def addInvestment():
 
 
 def editInvestment():
+    investment_types = helpers.get_investment_types()
+    print('Que tipo de investimento você gostaria de editar?')
+
+    for typ in investment_types:
+        print(f'{typ}')
+
+    user_invest_type = input()
+    investment_list = helpers.retrieve_investment(user_invest_type)
+    print(investment_list)
+    print('Qual investimento você gostaria de editar? (começando do 1)')
+    invest_index = int(input()) - 1
+    choosen_investment = investment_list[invest_index]
+    print(choosen_investment)
+    print('Qual dado você gostaria de alterar? (começando do 1)')
+    edit_index = int(input()) - 1
+    print(f'O que você gostaria de colocar no lugar do dado selecionado? Dado selecionado: {choosen_investment[edit_index]}')
+    new_value = input()
+    labels = helpers.get_investment_label(user_invest_type)
+    helpers.updateAtTable(table=user_invest_type, column=labels[edit_index], old_value=choosen_investment[edit_index], new_value=new_value)
+
     return
 
 def deleteInvestment():
@@ -51,8 +71,6 @@ def deleteInvestment():
     investment = investment_list[delete_invest_index][0]
 
     helpers.deleteAtIndexDb(user_invest_type, investment)
-    
-
     return
 
 def handleInput(option):
