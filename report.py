@@ -1,7 +1,7 @@
 import sqlite3
 from dotenv import load_dotenv
-import os
-import requests
+import helpers
+import api
 
 def defaultConfig():
     try:
@@ -32,40 +32,14 @@ def defaultConfig():
     except:
         raise Exception('Something went wrong with the database connection.')
 
-
-def get_investment_types():
-    return ['cash', 'international', 'stocks', 'fii', 'gov']
-
-#def insert_investment(typ, )
-
-def retrieve_investment(typ):
-    types = get_investment_types()
-    if typ not in types:
-        raise Exception('Type not accepted.')
-    try:
-        conn = sqlite3.connect('report.db')
-        c = conn.cursor()
-
-    except:
-        raise Exception('Something went wrong with the database connection')
-    
-    data = c.execute(
-        '''
-        SELECT * FROM {};
-    '''.format(typ))
-    data = data.fetchall()
-
-    conn.commit()
-    return data
-
 def construct_html():
     load_dotenv()
     quote_index = None
     html = '<div>'
-    types = get_investment_types()
+    types = helpers.get_investment_types()
     for typ in types:
-        type_data = retrieve_investment(typ)
-        label = get_investment_label(typ)
+        type_data = helpers.retrieve_investment(typ)
+        label = helpers.get_investment_label(typ)
 
         if 'quote' in label:
             quote_index = label.index('quote')
@@ -80,7 +54,7 @@ def construct_html():
                 html += f'<tr><td>{type_data[i][j]} </td></tr>'
 
             if quote_index != None:
-                actual_price = get_actual_price(type_data[i][quote_index])
+                actual_price = api.get_actual_price(type_data[i][quote_index])
              
                 html += '<tr><th scope="col">Actual_price</th></tr>'
                 html += f'<tr><td >{actual_price}</td></tr>'
@@ -89,38 +63,16 @@ def construct_html():
                     price_index = label.index('buy_price')
                     quantity_index = label.index('quantity')
 
-                    balance = calculate_balance(type_data[i][price_index], actual_price, type_data[i][quantity_index])
+                    balance = helpers.calculate_balance(type_data[i][price_index], actual_price, type_data[i][quantity_index])
 
                     html += '<tr><th scope="col">Balance</th></tr>'
                     html += f'<tr><td >{balance}</td></tr>'
             html += '</table>'
-
-
-
         html += '</div>'
     html += '</div>'
     doc_html = insert_in_html_template(html)
     return doc_html
 
-def calculate_balance(buy_price, actual_price, quantity):
-    buy_price = float(buy_price)
-    actual_price = float(actual_price)
-    quantity = float(quantity)
-    balance = (actual_price - buy_price) * quantity
-    return round(balance, 2)
-
-def get_actual_price(quote):
-    lower_quote = quote.lower()
-    api_key = os.getenv('API_KEY')
-    response = requests.get(f'https://api.hgbrasil.com/finance/stock_price?key={api_key}&symbol={lower_quote}')
-    response_json = response.json()
-    quote_info = response_json['results'][quote]
-
-    try:
-        actual_price = quote_info['price']
-    except:
-        return 'Esse símbolo não foi encontrado.'   
-    return actual_price
 
 def insert_in_html_template(html):
     html_template = f'''<!DOCTYPE html>
@@ -139,18 +91,6 @@ def insert_in_html_template(html):
 </html>'''
     return html_template
 
-def get_investment_label(typ):
-    switch = {
-        'cash': ['storedAt','quantity','rentability'],
-        'international': ['quote','buy_price','quantity','country'],
-        'stocks': ['quote','buy_price','quantity'],
-        'fii': ['quote', 'buy_price','quantity','dividend_yield'],
-        'gov': ['name','quantity','rentability']
-    }
-    choosen = switch.get(typ, 'default')
-    if choosen == 'default':
-        raise Exception('Erro: insira uma opção disponível')
-    return choosen
 
 def write_html():
     html = construct_html()

@@ -5,7 +5,7 @@ import report
 def insertInDb(table, data_list):
     conn = sqlite3.connect('report.db')
     c = conn.cursor()
-    labels = report.get_investment_label(table)
+    labels = get_investment_label(table)
     labels_query = ''
     for label in labels:
         if labels.index(label) == (len(labels) - 1):
@@ -29,3 +29,46 @@ def insertInDb(table, data_list):
     except:
         raise Exception('Something went wrong with insert query')
 
+
+def get_investment_types():
+    return ['cash', 'international', 'stocks', 'fii', 'gov']
+
+def retrieve_investment(typ):
+    types = get_investment_types()
+    if typ not in types:
+        raise Exception('Type not accepted.')
+    try:
+        conn = sqlite3.connect('report.db')
+        c = conn.cursor()
+    except:
+        raise Exception('Something went wrong with the database connection')
+    
+    data = c.execute(
+        '''
+        SELECT * FROM {};
+    '''.format(typ))
+    data = data.fetchall()
+
+    conn.commit()
+    return data
+
+def get_investment_label(typ):
+    switch = {
+        'cash': ['storedAt','quantity','rentability'],
+        'international': ['quote','buy_price','quantity','country'],
+        'stocks': ['quote','buy_price','quantity'],
+        'fii': ['quote', 'buy_price','quantity','dividend_yield'],
+        'gov': ['name','quantity','rentability']
+    }
+    choosen = switch.get(typ, 'default')
+    if choosen == 'default':
+        raise Exception('Erro: insira uma opção disponível')
+    return choosen
+
+
+def calculate_balance(buy_price, actual_price, quantity):
+    buy_price = float(buy_price)
+    actual_price = float(actual_price)
+    quantity = float(quantity)
+    balance = (actual_price - buy_price) * quantity
+    return round(balance, 2)

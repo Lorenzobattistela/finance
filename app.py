@@ -20,12 +20,12 @@ def showReport():
     return 
 
 def addInvestment():
-    investment_types = report.get_investment_types()
+    investment_types = helpers.get_investment_types()
     print('Escolha um tipo de investimento: ')
     for typ in investment_types:
         print(f'{typ}')
     user_invest_type = input()
-    labels = report.get_investment_label(user_invest_type)
+    labels = helpers.get_investment_label(user_invest_type)
     user_inputs = []
     for label in labels:
         user_inputs.append(input(f'{label}: '))
