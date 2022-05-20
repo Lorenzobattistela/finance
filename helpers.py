@@ -88,6 +88,12 @@ def calculate_balance(buy_price, actual_price, quantity):
     balance = (actual_price - buy_price) * quantity
     return round(balance, 2)
 
+def calculate_next_balance(rentability, quantity):
+    rentability = rentability / 12
+    profit = (rentability * quantity) / 100
+    return round(quantity + profit, 2)
+
+
 def updateAtTable(table, column, old_value, new_value):
     conn = sqlite3.connect('report.db')
     c = conn.cursor()

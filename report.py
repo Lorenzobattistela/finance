@@ -34,16 +34,25 @@ def defaultConfig():
 
 def construct_html():
     load_dotenv()
-    quote_index = None
     html = '<div>'
     types = helpers.get_investment_types()
     for typ in types:
         type_data = helpers.retrieve_investment(typ)
         label = helpers.get_investment_label(typ)
 
-        if 'quote' in label:
+        if "quote" in label:
             quote_index = label.index('quote')
+            rentability_index = None
+            
+        elif "rentability" in label:
+            rentability_index = label.index('rentability')
+            quantity_index = label.index('quantity')
+            quote_index = None
 
+        else:
+            quote_index = None
+            rentability_index = None
+        
         html += f'<h2>{typ}</h2><div class="tables">'
 
         for i in range(len(type_data)):
@@ -52,6 +61,12 @@ def construct_html():
             for j in range(len(label)):
                 html += f'<tr><th scope="col">{label[j]}</th></tr>'
                 html += f'<tr><td>{type_data[i][j]} </td></tr>'
+
+            if rentability_index != None:
+                next_month = helpers.calculate_next_balance(type_data[i][rentability_index], type_data[i][quantity_index])
+
+                html += '<tr><th scope="col">Expected Balance Next Month</th></tr>'
+                html += f'<tr><td >{next_month}</td></tr>'
 
             if quote_index != None:
                 actual_price = api.get_actual_price(type_data[i][quote_index])
@@ -72,6 +87,8 @@ def construct_html():
     html += '</div>'
     doc_html = insert_in_html_template(html)
     return doc_html
+
+
 
 
 def insert_in_html_template(html):
