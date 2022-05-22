@@ -108,3 +108,25 @@ def updateAtTable(table, column, old_value, new_value):
 
     print(f'Edited successfully investment at {table}')
     return
+
+def getQuoteIndex(labels):
+    quote_index = None
+    if "quote" in labels:
+        quote_index = labels.index('quote')
+    return quote_index
+
+def getRentabilityIndex(labels):
+    rentability_index = None
+    if "rentability" in labels:
+        rentability_index = labels.index('rentability')
+    return rentability_index
+
+def getQuantityIndex(labels):
+    return labels.index("quantity")
+
+def insertHtmlTableColumn(label):
+    return f'<tr><th scope="col">{label}</th></tr>'
+
+def insertHtmlDataColumn(data):
+    return  f'<tr><td>{data} </td></tr>'
+

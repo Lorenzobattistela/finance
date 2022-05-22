@@ -40,18 +40,12 @@ def construct_html():
         type_data = helpers.retrieve_investment(typ)
         label = helpers.get_investment_label(typ)
 
-        if "quote" in label:
-            quote_index = label.index('quote')
-            rentability_index = None
-            
-        elif "rentability" in label:
-            rentability_index = label.index('rentability')
-            quantity_index = label.index('quantity')
-            quote_index = None
-
+        quote_index = helpers.getQuoteIndex(label)
+        rentability_index = helpers.getRentabilityIndex(label)
+        if rentability_index == None:
+            quantity_index = None
         else:
-            quote_index = None
-            rentability_index = None
+            quantity_index = helpers.getQuantityIndex(label)
         
         html += f'<h2>{typ}</h2><div class="tables">'
 
@@ -59,20 +53,20 @@ def construct_html():
             html += '<table>'
 
             for j in range(len(label)):
-                html += f'<tr><th scope="col">{label[j]}</th></tr>'
-                html += f'<tr><td>{type_data[i][j]} </td></tr>'
+                html += helpers.insertHtmlTableColumn(label[j])
+                html += helpers.insertHtmlDataColumn(type_data[i][j])
 
             if rentability_index != None:
                 next_month = helpers.calculate_next_balance(type_data[i][rentability_index], type_data[i][quantity_index])
 
-                html += '<tr><th scope="col">Expected Balance Next Month</th></tr>'
-                html += f'<tr><td >{next_month}</td></tr>'
+                html += helpers.insertHtmlTableColumn("Expected Balance Next Month")
+                html += helpers.insertHtmlDataColumn(next_month)
 
             if quote_index != None:
                 actual_price = api.get_actual_price(type_data[i][quote_index])
-             
-                html += '<tr><th scope="col">Actual_price</th></tr>'
-                html += f'<tr><td >{actual_price}</td></tr>'
+
+                html += helpers.insertHtmlTableColumn("Actual Price")
+                html += helpers.insertHtmlDataColumn(actual_price)
 
                 if actual_price != 'Esse símbolo não foi encontrado.':
                     price_index = label.index('buy_price')
@@ -80,8 +74,8 @@ def construct_html():
 
                     balance = helpers.calculate_balance(type_data[i][price_index], actual_price, type_data[i][quantity_index])
 
-                    html += '<tr><th scope="col">Balance</th></tr>'
-                    html += f'<tr><td >{balance}</td></tr>'
+                    html += helpers.insertHtmlTableColumn("Balance")
+                    html += helpers.insertHtmlDataColumn(balance)
             html += '</table>'
         html += '</div>'
     html += '</div>'
