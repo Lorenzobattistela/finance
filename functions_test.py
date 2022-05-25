@@ -4,7 +4,9 @@ import helpers
 class TestHelpers(unittest.TestCase):
     def testInvestmentTypes(self):
         investTypes = ['cash', 'international', 'stocks', 'fii', 'gov']
-        self.assertEqual(helpers.get_investment_types(), investTypes, 'Should have cash, international, stocks, fii and gov.')
+        types = helpers.get_investment_types()
+        self.assertEqual(types, investTypes, 'Should have cash, international, stocks, fii and gov.')
+        self.assertCountEqual(types, investTypes)
 
     def testInvestmentLabel(self):
         investTypes = ['cash', 'international', 'stocks', 'fii', 'gov']
@@ -14,6 +16,9 @@ class TestHelpers(unittest.TestCase):
             labels = helpers.get_investment_label(investTypes[i])
             self.assertEqual(labels, investLabels[i])
 
+        with self.assertRaises(Exception):
+            helpers.get_investment_label('saasdasd')
+
     def testCalculateBalance(self):
         buy_price = 100
         actual_price = 150
@@ -22,7 +27,7 @@ class TestHelpers(unittest.TestCase):
         balance = helpers.calculate_balance(buy_price, actual_price, quantity)
         self.assertEqual(balance, true_balance)
 
-    def calculate_next_balance(self):
+    def testCalculateNextBalance(self):
         rentability = 10 #percent
         value = 100 # reais
         true_nxt_balance = round((100 + (10 / 12)), 2)
