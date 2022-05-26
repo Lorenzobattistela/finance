@@ -14,6 +14,9 @@ def main():
     return
 
 def showReport():
+    """
+    Triggers report writing and show report using browser.
+    """
     report.defaultConfig()
     report.write_html()
     browser.openReport()
