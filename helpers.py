@@ -128,5 +128,5 @@ def insertHtmlTableColumn(label):
     return f'<tr><th scope="col">{label}</th></tr>'
 
 def insertHtmlDataColumn(data):
-    return  f'<tr><td>{data} </td></tr>'
+    return  f'<tr><td>{data}</td></tr>'
 

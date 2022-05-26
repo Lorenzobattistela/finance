@@ -34,5 +34,46 @@ class TestHelpers(unittest.TestCase):
         nxt_balance = helpers.calculate_next_balance(rentability, value)
         self.assertEqual(nxt_balance, true_nxt_balance)
 
+    def testQuoteIndex(self):
+        withQuoteLabels = [['quote','buy_price','quantity','country'], ['quote','buy_price','quantity'],['quote', 'buy_price','quantity','dividend_yield']]
+
+        for label in withQuoteLabels:
+            true_index = label.index('quote')
+            index = helpers.getQuoteIndex(label)
+            self.assertEqual(index, true_index)
+        
+        noQuoteLabels = [['storedAt','quantity','rentability'], ['name','quantity','rentability']]
+
+        for label in noQuoteLabels:
+            index = helpers.getQuoteIndex(label)
+            self.assertEqual(index, None)
+
+    def testRentabilityIndex(self):
+        withRentabilityLabels = [['storedAt','quantity','rentability'], ['name','quantity','rentability']]
+        for label in withRentabilityLabels:
+            true_index = label.index('rentability')
+            index = helpers.getRentabilityIndex(label)
+            self.assertEqual(index, true_index)
+        
+        noRentabilityLabels = [['quote','buy_price','quantity','country'], ['quote','buy_price','quantity'],['quote', 'buy_price','quantity','dividend_yield']]
+
+        for label in noRentabilityLabels:
+            index = helpers.getRentabilityIndex(label)
+            self.assertEqual(index, None)
+
+    def testInsertHtmlColumn(self):
+        true_html = '<tr><td>someData</td></tr>'
+        html = helpers.insertHtmlTableColumn('someLabel')
+        self.assertEqual(html, true_html)
+        self.assertIn('someLabel', html)
+
+    def testInsertHtmlColumn(self):
+        true_html = '<tr><td>someData</td></tr>'
+        html = helpers.insertHtmlDataColumn('someData')
+        self.assertEqual(html, true_html)
+        self.assertIn('someData', html)
+    
+    
+
 if __name__ == '__main__':
     unittest.main()
