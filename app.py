@@ -1,4 +1,4 @@
-from click import edit
+
 import browser
 import report
 import helpers
@@ -92,3 +92,5 @@ def handleInput(option):
 
 main()
 
+
+#TODO FIX VALIDATION OF CASES (STRING NOT PASSING EDIT, EQUAL VALUES GOING WRONG ON INSERT QUERY)
