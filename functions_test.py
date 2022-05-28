@@ -1,5 +1,6 @@
 import unittest
 import helpers
+import report
 
 class TestHelpers(unittest.TestCase):
     def testInvestmentTypes(self):
@@ -73,7 +74,22 @@ class TestHelpers(unittest.TestCase):
         self.assertEqual(html, true_html)
         self.assertIn('someData', html)
     
+
+class TestReport(unittest.TestCase):
+    def testHtmlInsertInTemplate(self):
+        toInsertHtml = '<div>abcdefg</div>'
+        html = report.insert_in_html_template(toInsertHtml)
+        self.assertIn(toInsertHtml, html)
     
+    def testHtmlWriting(self):
+        html = report.write_html()
+        with open ('report.html', 'r') as html_file:
+            self.assertIsNotNone(html_file)
+            firstLine = html_file.readline()
+            true_firstLine = '<!DOCTYPE html>\n'
+            self.assertEqual(firstLine, true_firstLine)
+        html_file.close()
+
 
 if __name__ == '__main__':
     unittest.main()
