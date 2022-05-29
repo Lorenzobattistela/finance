@@ -80,6 +80,26 @@ def get_investment_label(typ):
         raise Exception('Erro: insira uma opção disponível')
     return choosen
 
+def getTotalBalance():
+    conn = sqlite3.connect('report.db')
+    c = conn.cursor()
+    balances = []
+    tables = get_investment_types()
+    for table in tables:
+        if table == 'cash' or table == 'gov':
+            query = f'SELECT quantity FROM {table};'
+            data = c.execute(query)
+            data = data.fetchall()
+            for el in data:
+                balances.append(el[0])
+        else:
+            query = f'SELECT buy_price, quantity FROM {table};'
+            data = c.execute(query)
+            data = data.fetchall()
+            for el in data:
+                balances.append((el[0] * el[1]))
+        conn.commit()
+    return round(sum(balances), 2)
 
 def calculate_balance(buy_price, actual_price, quantity):
     buy_price = float(buy_price)
@@ -129,4 +149,5 @@ def insertHtmlTableColumn(label):
 
 def insertHtmlDataColumn(data):
     return  f'<tr><td>{data}</td></tr>'
+
 

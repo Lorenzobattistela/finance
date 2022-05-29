@@ -76,8 +76,12 @@ def construct_html():
 
                     html += helpers.insertHtmlTableColumn("Balance")
                     html += helpers.insertHtmlDataColumn(balance)
+
+            totalBalance = helpers.getTotalBalance()   
             html += '</table>'
         html += '</div>'
+    html += f'<h1 class="title">Total Balance: {totalBalance}</h1>'
+    html += f'<small class="title">Essa quantidade não conta prejuízos não retirados nos investimento. Para o valor real, diminua ou aumente os Balances de cada ação.</small>'
     html += '</div>'
     doc_html = insert_in_html_template(html)
     return doc_html
