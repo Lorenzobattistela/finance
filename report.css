@@ -1,9 +1,6 @@
 .data {
     display: flex;
 }
-table, th, td {
-    
-}
 
 th, td {
     text-align: left;
@@ -14,9 +11,13 @@ th, td {
 }
 
 th {
-    background: #eee;
+    background: rgb(240, 140, 140);
 }
 
 .tables {
     display: flex;
+}
+
+.title {
+    text-align: center;
 }

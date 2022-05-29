@@ -96,7 +96,7 @@ def insert_in_html_template(html):
     <title>Finance Report</title>
 </head>
 <body>
-    <h1>Finance Report</h1>
+    <h1 class="title">Finance Report</h1>
     {html}
 </body>
 </html>'''
